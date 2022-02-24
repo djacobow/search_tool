@@ -1,4 +1,5 @@
 from .. import util
+from .. import shell
     
 class Shell:
     def __init__(self, config):
@@ -29,5 +30,5 @@ class Shell:
             len(self.config['commands'][scname]['shellcommands'])):
             show_name = self.config['commands'][scname].get('show_name',True)
             for args in self.config['commands'][scname]['shellcommands']:
-                stlib.shell.shellShowOutput(scname,args,show_name=show_name)
+                shell.shellShowOutput(scname,args,show_name=show_name)
     
