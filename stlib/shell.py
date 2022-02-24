@@ -39,7 +39,9 @@ def repoinfo():
     if url is None or re.match(r'fatal',url):
         util.die('Not in a git repo?')
 
-    repo = os.path.basename(root)
+    # get canonical name of repo
+    repo_url = shellReturnOutput('git remote get-url origin')
+    repo = os.path.splitext(os.path.basename(repo_url))[0]
 
     branch = shellReturnOutput('git rev-parse --abbrev-ref HEAD')
     return {
