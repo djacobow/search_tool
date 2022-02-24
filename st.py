@@ -80,7 +80,7 @@ def buildConfig():
                     configfiles_data.append(results.get('CONFIG',{}))
             except Exception as e:
                 print(repr(e))
-                stlib.util.die('Could not read config file {}'.format(cfgpath))
+                stlib.util.die('Could not read or process config file {} because {repr(e)}'.format(cfgfile))
 
     combined_config = {}
     for file_data in configfiles_data:
@@ -92,26 +92,6 @@ def buildConfig():
                     combined_config[top_key][second_key] = second_blob
 
     return combined_config
-
-
-def getConfig():
-    def shell(cmd):
-        return subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
-
-    repo_base = shell(['git','rev-parse','--show-toplevel'])
-    cfgpath = os.path.join(repo_base, '.st_config.py')
-
-    homecfgpath = os.path.join(pathlib.Path.home(),'.st_config.py')
-    if os.path.exists(homecfgpath):
-        cfgpath = homecfgpath
-
-    try:
-       with open(cfgpath,'r') as ifh:
-           data = ifh.read()
-           exec(data, globals())
-    except Exception as e:
-        print(repr(e))
-        stlib.util.die('Could not read config file {}'.format(cfgpath))
 
 
 if __name__ == '__main__':
