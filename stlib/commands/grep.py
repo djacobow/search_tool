@@ -21,9 +21,8 @@ class Grep:
     def grepFile(self, fn, pattern, nocolor=False, context=0, replpat=None, ofn_prefix=None):
         matches = {}
         lcount = 0;
-        with open(fn,'r') as ifh:
-            lines = ifh.readlines()
-            for line in lines:
+        with open(fn,'r',errors='ignore') as ifh:
+            for line in ifh:
                 if re.search(r'' + pattern, line):
                     if replpat is not None:
                         line = re.sub(pattern,replpat,line)
