@@ -7,32 +7,34 @@ class Grep:
     def __init__(self, config):
         self.config = config
 
-    def colorize_regex(self, pattern,line,color):
+    def colorize_regex(self, pattern,line,color,flags):
         try:
             # colorizing and replacing is just complicated enough
             # that we sometimes screw it up. Don't have the script
             # die just because it cannot colorize
             repl = colorize(r'\g<0>',color)
-            newline = re.sub(pattern, ''.join(repl), line)
+            newline = re.sub(pattern, ''.join(repl), line, flags=flags)
         except:
             newline = line
         return newline
     
-    def grepFile(self, fn, pattern, nocolor=False, context=0, replpat=None, ofn_prefix=None):
+    def grepFile(self, fn, pattern, nocolor=False, context=0, replpat=None,
+                 ofn_prefix=None,ignorecase=False):
         matches = {}
         lcount = 0;
         with open(fn,'r',errors='ignore') as ifh:
+            flags = re.IGNORECASE if ignorecase else 0
             for line in ifh:
-                if re.search(r'' + pattern, line):
+                if re.search(r'' + pattern, line, flags=flags):
                     if replpat is not None:
                         line = re.sub(pattern,replpat,line)
                         lines[lcount] = line 
     
                     if not nocolor:
                         if replpat is None:
-                            line = self.colorize_regex(pattern, line, self.config['grep']['match_color'])
+                            line = self.colorize_regex(pattern, line, self.config['grep']['match_color'], flags)
                         else:
-                            line = self.colorize_regex(replpat, line, self.config['grep']['repl_color'])
+                            line = self.colorize_regex(replpat, line, self.config['grep']['repl_color'], flags)
                     matches[lcount] = line
                     for offset in range(context):
                         offset += 1
@@ -113,7 +115,9 @@ class Grep:
                                      nocolor=adict.get('nocolor',False),
                                      context=context,
                                      replpat=replpat,
-                                     ofn_prefix=ofn_prefix)
+                                     ofn_prefix=ofn_prefix,
+                                     ignorecase='i' in adict,
+                                     )
             if len(fmatches):
                 matchfiles.append(f)
                 if not 'f' in adict:
