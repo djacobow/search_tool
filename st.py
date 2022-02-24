@@ -91,8 +91,9 @@ def buildConfig():
                     if not second_key in combined_config[top_key]:
                         combined_config[top_key][second_key] = second_blob
                     else:
-                        for third_key, third_blob in second_blob.items():
-                            combined_config[top_key][second_key][third_key] = third_blob 
+                        if isinstance(second_blob, dict):
+                            for third_key, third_blob in second_blob.items():
+                                combined_config[top_key][second_key][third_key] = third_blob 
 
     return combined_config
 
