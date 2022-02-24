@@ -79,8 +79,7 @@ def buildConfig():
                     exec(data, results) 
                     configfiles_data.append(results.get('CONFIG',{}))
             except Exception as e:
-                print(repr(e))
-                stlib.util.die('Could not read or process config file {} because {repr(e)}'.format(cfgfile))
+                stlib.util.die(f'Could not read or process config file {cfgfile} because {repr(e)}')
 
     combined_config = {}
     for file_data in configfiles_data:
