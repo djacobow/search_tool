@@ -22,13 +22,15 @@ class Grep:
                  ofn_prefix=None,ignorecase=False):
         matches = {}
         lcount = 0;
+        lines = []
         with open(fn,'r',errors='ignore') as ifh:
             flags = re.IGNORECASE if ignorecase else 0
             for line in ifh:
+                oline = line
                 if re.search(r'' + pattern, line, flags=flags):
                     if replpat is not None:
                         line = re.sub(pattern,replpat,line)
-                        lines[lcount] = line 
+                        oline = line
     
                     if not nocolor:
                         if replpat is None:
@@ -43,6 +45,7 @@ class Grep:
                         if (lcount - offset) >= 0         and matches.get(lcount-offset) is None:
                             matches[lcount-offset] = lines[lcount-offset]
                 lcount += 1
+                lines.append(oline)
     
         if ofn_prefix is not None:
             (fndir, fnbase) = os.path.split(fn)
