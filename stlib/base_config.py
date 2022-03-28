@@ -12,6 +12,7 @@ import stlib.commands.find
 import stlib.commands.baa
 import stlib.commands.pb_decode
 import stlib.commands.paths
+import stlib.commands.tstamp
 import stlib.shell
 
 repoinfo = stlib.shell.repoinfo()
@@ -74,6 +75,10 @@ CONFIG = {
         'p': {
             'description': 'Shortcut to get various useful paths.',
             'class': stlib.commands.paths.PathsFn
+        },
+        't': {
+            'description': 'Convert numerical timestamps to human readable',
+            'class': stlib.commands.tstamp.TSDecoder
         },
     }
 }
