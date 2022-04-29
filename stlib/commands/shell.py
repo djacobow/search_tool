@@ -13,7 +13,7 @@ class Exec:
             '',
             'execs :'
         ]
-        usage += [ ' '*4 + self.config['commands'][scname].get('exec_command')]
+        usage += [ ' '*4 + self.config['commands'][scname].get('command')]
         return usage
 
 
