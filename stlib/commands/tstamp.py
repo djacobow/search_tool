@@ -24,7 +24,8 @@ class TSDecoder:
             print(f'Returning the CURRENT time: {now}')
 
         try:
-            ts = float(adict['args'][0])
+            ts_str = re.search(r'([\.0-9]+)', adict['args'][0].strip())[1]
+            ts = float(ts_str)
         except Exception as e:
             print(f'-Error- {repr(e)}')
             return   

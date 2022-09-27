@@ -1,4 +1,4 @@
-import os
+import os, re
 from .. import util
     
 class Find():
@@ -7,14 +7,15 @@ class Find():
     
     def usage(self, adict):
         usage = [
-            'f <pattern> [-type_specifer(s)] [-path_specifier(s)] [-editor]',
+            'f <pattern1> [pattern2] [-type_specifer(s)] [-path_specifier(s)] [-editor]',
             '',
         ]
         usage += util.getSpecifierList(self.config, adict['repoinfo']['name'])
         usage += [
             '',
             ' * options with "(*)" are defaults',
-            ' * pattern only is matched on file basename, not the complete path',
+            ' * pattern1 only is matched on file basename, not the complete path',
+            ' * pattern2 is matched anything in the path',
         ]
         return usage
 
@@ -28,7 +29,13 @@ class Find():
             print('no patterns to search')
             return
     
-        found = util.fileGlob(spaths, ftypes, fpats)
+        # glob is on the basename only
+        found = util.fileGlob(spaths, ftypes, [fpats[0]])
+
+        # you can enforce a subset based on other parts of the path here
+        if len(fpats) > 1:
+            for pat2 in fpats[1:]:
+                found = list(filter(lambda l: re.search(pat2, l), found))
                 
         if len(found):
             print('\n'.join(map(os.path.relpath,found)))
