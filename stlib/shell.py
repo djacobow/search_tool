@@ -33,7 +33,7 @@ def shellDetach(what):
 def repoinfo():
     root = shellReturnOutput('git rev-parse --show-toplevel')
     if root is None or re.match(r'fatal',root):
-        util.die('Not in a git repo')
+        return None
 
     url = shellReturnOutput('git config --get remote.origin.url')
     if url is None or re.match(r'fatal',url):
