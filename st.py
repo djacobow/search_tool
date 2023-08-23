@@ -65,9 +65,13 @@ def buildConfig():
 
     config_files = [
         os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])),'stlib','base_config.py'),
-        os.path.join(shell(['git','rev-parse','--show-toplevel']), '.st_config.py'),
-        os.path.join(pathlib.Path.home(),'.st_config.py')
+        os.path.join(pathlib.Path.home(),'.st_config.py'),
     ]
+
+    # If we're in a git repo, see if there's an st config file at the top level
+    repoinfo = stlib.shell.repoinfo()
+    if repoinfo:
+       config_files.append(os.path.join(repoinfo['root'], '.st_config.py'))
 
     configfiles_data = []
     for cfgfile in config_files:

@@ -32,23 +32,28 @@ class TSDecoder:
         utc_dt = None
 
         utcnow_dt = datetime.datetime.now().astimezone(datetime.timezone.utc)
-        if len(args) < 1:
+        if len(args) == 0:
             prefix = "CURRENT "
             utc_dt = utcnow_dt
-        elif has_dateparser:
-            localzone = datetime.datetime.now().astimezone().tzinfo
-            utc_dt = dateparser.parse(" ".join(args), settings={
-                'TIMEZONE': str(localzone),
-                'TO_TIMEZONE': 'UTC',
-                'RETURN_AS_TIMEZONE_AWARE': True,
-            })
+        else:
+            ts = None
+            if len(args) == 1:
+                try:
+                    ts = float(adict['args'][0])
+                    utc_dt = datetime.datetime.fromtimestamp(ts, tz=datetime.timezone.utc)
+                except ValueError:
+                    pass
 
-        # parse as float if we don't have dateparser, or if the dateparser fails
-        if not utc_dt:
-            ts_str = re.search(r'([\.0-9]+)', adict['args'][0].strip())[1]
-            ts = float(ts_str)
-            utc_dt = datetime.datetime.fromtimestamp(ts, tz=datetime.timezone.utc)
+            if not utc_dt and  has_dateparser:
+                localzone = datetime.datetime.now().astimezone().tzinfo
+                utc_dt = dateparser.parse(" ".join(args), settings={
+                    'TIMEZONE': str(localzone),
+                    'TO_TIMEZONE': 'UTC',
+                    'RETURN_AS_TIMEZONE_AWARE': True,
+                })
 
+            if not utc_dt:
+                util.die('can not parse timestamp')
 
         def _show(prefix, dt):
             print(f'{prefix}{dt.tzinfo.tzname(None)}  Time {dt.isoformat()[:-6]}')
