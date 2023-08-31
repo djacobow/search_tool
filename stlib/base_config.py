@@ -45,6 +45,7 @@ CONFIG = {
         'proto': { 'default': True, },
         'py':    { 'default': False, 'grep_extra_glob': ['SConstruct'], },
         'sh':    { 'default': False, },
+        'yaml':  { 'default': False, },
         'txt':   { 'default': False, },
         'sh':    { 'default': False, },
         'mk':    { 'default': False, },

@@ -47,9 +47,9 @@ class BashAddAlias:
             with open(use_fn, 'a') as ofh:
                 our_path= os.path.abspath(sys.argv[0])
                 olines = [
-                   '# Inserted by st.py at {}'.format(datetime.datetime.now().isoformat()),
-                   f"alias st={our_path}"
                    '',
+                   '# Inserted by st.py at {}'.format(datetime.datetime.now().isoformat()),
+                   f"alias st={our_path}",
                 ]
                 ofh.write('\n'.join(olines))
         except Exception as e:
