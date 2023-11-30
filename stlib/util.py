@@ -70,26 +70,27 @@ def makeTypeList(config, adict):
 
 def makeSearchPathList(config, adict):
     pnames = []
-    repo = adict['repoinfo']['name']
-    if repo is None:
-        die('need to be inside a github repo')
-    if repo not in config['code_search_paths']:
-        die('Repo {} is not in config file.'.format(repo))
+    repoinfo = adict['repoinfo']
+    if repoinfo is None:
+        die('need to be inside a git repo')
+    reponame = repoinfo['name']
+    if reponame not in config['code_search_paths']:
+        die(f'Repo "{reponame}" is not in config file.')
 
-    possibles = list(config['code_search_paths'][repo].keys())
+    possibles = list(config['code_search_paths'][reponame].keys())
     for n in possibles:
         if n in adict:
             pnames.append(n)
 
     if not len(pnames):
-        pnames = list(filter(lambda x: config['code_search_paths'][repo][x]['default'], possibles));
+        pnames = list(filter(lambda x: config['code_search_paths'][reponame][x]['default'], possibles));
     
-    root = adict['repoinfo']['root']
+    root = repoinfo['root']
     paths = []
     for x in pnames:
-        for y in config['code_search_paths'][repo][x].get('include'):
+        for y in config['code_search_paths'][reponame][x].get('include'):
             npath = os.path.join(root,y)
-            paths.append({ 'include': npath, 'exclude': config['code_search_paths'][repo][x].get('exclude') })
+            paths.append({ 'include': npath, 'exclude': config['code_search_paths'][reponame][x].get('exclude') })
     return paths
 
 
