@@ -44,7 +44,8 @@ def repoinfo():
     repo = os.path.splitext(os.path.basename(repo_url))[0]
 
     branch = shellReturnOutput('git rev-parse --abbrev-ref HEAD')
+    commit = shellReturnOutput('git rev-parse HEAD')
     return {
-        'root': root, 'url': url, 'name':repo, 'branch':branch,
+        'root': root, 'url': url, 'name':repo, 'branch':branch, 'commit': commit
     }
 

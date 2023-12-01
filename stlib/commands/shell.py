@@ -1,6 +1,6 @@
 from .. import util
 from .. import shell
-    
+
 class Exec:
     def __init__(self, config):
         self.config = config
@@ -21,7 +21,7 @@ class Exec:
         scname = adict.get('subcommand')
 
         if scname is None:
-            stlib.util.die('unknown subcommand')
+            util.die('unknown subcommand')
     
         if ((scname is not None) and 
             (self.config['commands'].get(scname) is not None) and
@@ -61,7 +61,7 @@ class Shell:
         scname = adict.get('subcommand')
     
         if scname is None:
-            stlib.util.die('unknown subcommand')
+            util.die('unknown subcommand')
     
         if ((scname is not None) and 
             (self.config['commands'].get(scname) is not None) and

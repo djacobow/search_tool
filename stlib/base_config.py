@@ -13,6 +13,7 @@ import stlib.commands.baa
 import stlib.commands.pb_decode
 import stlib.commands.paths
 import stlib.commands.tstamp
+import stlib.commands.repo
 import stlib.shell
 
 repoinfo = stlib.shell.repoinfo()
@@ -47,7 +48,6 @@ CONFIG = {
         'sh':    { 'default': False, },
         'yaml':  { 'default': False, },
         'txt':   { 'default': False, },
-        'sh':    { 'default': False, },
         'mk':    { 'default': False, },
         'json':  { 'default': False, },
         'cmake': { 'default': False, 'grep_extra_glob': ['CMakeLists.txt'], },
@@ -81,6 +81,10 @@ CONFIG = {
             'description': 'Convert numerical timestamps to human readable',
             'class': stlib.commands.tstamp.TSDecoder
         },
+        'ri': {
+            'description': 'Convert numerical timestamps to human readable',
+            'class': stlib.commands.repo.Info
+        }
     }
 }
 
