@@ -43,6 +43,7 @@ CONFIG = {
         'c':     { 'default': True, },
         'h':     { 'default': True, },
         'cpp':   { 'default': True, },
+        'hpp':   { 'default': True, },
         'proto': { 'default': True, },
         'py':    { 'default': False, 'grep_extra_glob': ['SConstruct'], },
         'sh':    { 'default': False, },
