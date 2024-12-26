@@ -24,6 +24,48 @@ class TSDecoder:
         usage.append(scname)
         return usage
 
+    def _timestamp_within_years(self, t, num_years):
+        now_sec = time.time()
+        years_in_sec = 60 * 60 * 24 * 365 * num_years
+        return abs(t - now_sec) < years_in_sec
+
+    def _try_parse_time_int(self, s):
+        try:
+            orig_ts = float(s)
+        except ValueError:
+            return None
+
+        # We want to try to intelligently parse both UNIX and GPS timestamps.
+        # GPS and UNIX epochs are about 10 years apart, so there's no easy way
+        # to distinguish an old UNIX timestamp from a contemporary GPS
+        # timestamp. But, let's assume timestamps are often contemporary. So,
+        # first check to see if interpreting the timestamp as GPS time gives us
+        # a time within 2 years of today. If so, great. If not, interpret as a
+        # UNIX-epoch timestamp.
+        #
+        # Also, try to parse timestamp as s, ms, us, ns
+        powers = {
+            0: '',
+            3: 'milli',
+            6: 'micro',
+            9: 'nano',
+        }
+        for power, prefix in powers.items():
+            ts = orig_ts / 10**power
+
+            # Try GPS. WARNING, this offset is only valid in 2024-adjacent years unless
+            # we bother to write code that handles leap seconds right
+            unix_ts_if_gps = ts + 315964782
+            if self._timestamp_within_years(unix_ts_if_gps, num_years=2):
+                print(f"Assuming original timestamp is GPS-epoch {prefix}sec")
+                return datetime.datetime.fromtimestamp(unix_ts_if_gps, tz=datetime.timezone.utc)
+
+            if self._timestamp_within_years(ts, num_years=50):
+                print(f"Assuming original timestamp is UNIX-epoch {prefix}sec")
+                return datetime.datetime.fromtimestamp(ts, tz=datetime.timezone.utc)
+
+        return None
+
     def run(self, adict):
         scname = adict.get('subcommand')
         args = adict.get('args', [])
@@ -38,13 +80,9 @@ class TSDecoder:
         else:
             ts = None
             if len(args) == 1:
-                try:
-                    ts = float(adict['args'][0])
-                    utc_dt = datetime.datetime.fromtimestamp(ts, tz=datetime.timezone.utc)
-                except ValueError:
-                    pass
+                utc_dt = self._try_parse_time_int(adict['args'][0])
 
-            if not utc_dt and  has_dateparser:
+            if not utc_dt and has_dateparser:
                 localzone = datetime.datetime.now().astimezone().tzinfo
                 utc_dt = dateparser.parse(" ".join(args), settings={
                     'TIMEZONE': str(localzone),
